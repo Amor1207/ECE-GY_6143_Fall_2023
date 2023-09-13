@@ -9,7 +9,9 @@ This is an introductory course on the fundamentals of machine learning, covering
 \`\`\`
 .
 ├── week-1-intro-to-ml       # Week 1: Introduction to Machine Learning
+
 ├── week-2-linear-regression # Week 2: Linear Regression
+
 ├── week-3-gradient-descent  # Week 3: Gradient Descent
 .
 .
