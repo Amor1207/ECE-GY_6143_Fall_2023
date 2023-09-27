@@ -197,27 +197,29 @@ fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=True, sharey=True)
 
 # TV Model
 axes[0].scatter(train['sales'], train['pred_sales_tv'], alpha=0.6)
-axes[0].plot([0, 30], [0, 30], '--k', color='red')
+axes[0].plot([0, 30], [0, 30], '--', color='red')
 axes[0].set_title('TV Model')
 axes[0].set_xlabel('Actual Sales')
 axes[0].set_ylabel('Predicted Sales')
 
 # Radio Model
 axes[1].scatter(train['sales'], train['pred_sales_radio'], alpha=0.6)
-axes[1].plot([0, 30], [0, 30], '--k', color='red')
+axes[1].plot([0, 30], [0, 30], '--', color='red')
 axes[1].set_title('Radio Model')
 axes[1].set_xlabel('Actual Sales')
 axes[1].set_ylabel('Predicted Sales')
 
 # Newspaper Model
 axes[2].scatter(train['sales'], train['pred_sales_news'], alpha=0.6)
-axes[2].plot([0, 30], [0, 30], '--k', color='red')
+axes[2].plot([0, 30], [0, 30], '--', color='red')
 axes[2].set_title('Newspaper Model')
 axes[2].set_xlabel('Actual Sales')
 axes[2].set_ylabel('Predicted Sales')
 
 plt.tight_layout()
 plt.show()
+
+train
 
 """**Plot 2**: Create a scatter plot with the residuals ($y - \hat{y}$) on the vertical axis, and actual sales ($y$) on the horizontal axis. Use the same vertical scale for all three subplots, and the same horizontal scale for all three subplots (but the vertical scale and the horizontal scale will not be the same as one another!). Comment on your observations. Is there a pattern in the residuals (and if so, what might it indicate), or do they appear to have no pattern with respect to actual sales?"""
 
@@ -252,6 +254,8 @@ axes[2].set_ylabel('Residuals')
 
 plt.tight_layout()
 plt.show()
+
+train
 
 """**Plot 3**: For each of the three regression models AND each of the three features, create a scatter plot with the residuals ($y - \hat{y}$) on the vertical axis, and the feature ($x$) on the horizontal axis. This plot will include nine subplots in total, for every combination of regression model and feature. Use the same vertical scale for all subplots (but the horizontal scale will depend on the feature!) Make sure to clearly label each axis, and also label each subplot with a title that indicates which regression model it uses. Is there a pattern in the residuals (and if so, what might it indicate), or do they appear to have no pattern with respect to each of the three features?"""
 
@@ -315,16 +319,93 @@ y_pred_tr_multi = reg_multi.predict(train[['TV', 'radio', 'newspaper']])
 r2_tr_multi  = metrics.r2_score(train['sales'], y_pred_tr_multi)
 mse_tr_multi = metrics.mean_squared_error(train['sales'], y_pred_tr_multi)
 
-print("Multiple regression R2:  ", r2_tr_multi)
-print("Multiple regression MSE: ", mse_tr_multi)
+print("Multiple regression R2 of Train:  ", r2_tr_multi)
+print("Multiple regression MSE of Train: ", mse_tr_multi)
 
 y_pred_ts_multi = reg_multi.predict(test[['TV', 'radio', 'newspaper']])
 
 r2_ts_multi  = metrics.r2_score(test['sales'], y_pred_ts_multi)
 mse_ts_multi = metrics.mean_squared_error(test['sales'], y_pred_ts_multi)
 
-print("Multiple regression R2:  ", r2_ts_multi)
-print("Multiple regression MSE: ", mse_ts_multi)
+print("Multiple regression R2 of Test:  ", r2_ts_multi)
+print("Multiple regression MSE of Test: ", mse_ts_multi)
+
+### Plot 1 ###
+
+# Calculating predicted sales for multiple regression model
+train['pred_sales_multiple'] = reg_multi.predict(train[['TV','radio','newspaper']])
+
+# Plotting again
+fig, ax = plt.subplots(figsize=(6, 6))
+
+# Multiple Model
+ax.scatter(train['sales'], train['pred_sales_multiple'], alpha=0.6)
+ax.plot([0, 30], [0, 30], '--', color='red')
+ax.set_title('Multiple Model')
+ax.set_xlabel('Actual Sales')
+ax.set_ylabel('Predicted Sales')
+
+plt.tight_layout()
+plt.show()
+
+### Plot 2 ###
+
+# Calculating residuals for multiple regression model
+train['residual_multiple'] = train['sales'] - train['pred_sales_multiple']
+
+# Plotting again
+fig, ax = plt.subplots(figsize=(6, 6))
+
+# Multiple Model
+ax.scatter(train['sales'], train['residual_multiple'], alpha=0.6)
+ax.axhline(0, color='red', linestyle='--')
+
+# Set y-axis limits to ensure the red dashed line is in the middle
+max_residual = abs(train['residual_multiple']).max()
+ax.set_ylim(-max_residual, max_residual)
+
+ax.set_title('Multiple Model')
+ax.set_xlabel('Residuals')
+ax.set_ylabel('Predicted Sales')
+
+plt.tight_layout()
+plt.show()
+
+### Plot 3 ###
+
+# Plotting residuals
+fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharex=False,sharey=True)
+
+# Set y-axis limits to ensure the red dashed line is in the middle
+max_residual = abs(train['residual_multiple']).max()
+
+
+# TV Model
+axes[0].scatter(train['TV'], train['residual_multiple'], alpha=0.6)
+axes[0].set_ylim(-max_residual, max_residual)
+axes[0].axhline(0, color='red', linestyle='--')
+axes[0].set_title('TV Model')
+axes[0].set_xlabel('TV')
+axes[0].set_ylabel('Residuals')
+
+# Radio Model
+axes[1].scatter(train['radio'], train['residual_multiple'], alpha=0.6)
+axes[1].axhline(0, color='red', linestyle='--')
+axes[1].set_title('Radio Model')
+axes[1].set_xlabel('Radio')
+axes[1].set_ylabel('Residuals')
+
+# Newspaper Model
+axes[2].scatter(train['newspaper'], train['residual_multiple'], alpha=0.6)
+axes[2].axhline(0, color='red', linestyle='--')
+axes[2].set_title('Newspaper Model')
+axes[2].set_xlabel('Newspaper')
+axes[2].set_ylabel('Residuals')
+
+plt.tight_layout()
+plt.show()
+
+train[['TV', 'radio', 'newspaper']].corr()
 
 """### 4. Linear regression with interaction terms
 
@@ -352,3 +433,4 @@ Note that in general, to earn full credit, plots must:
 -   Have an appropriate range for each axis. When there are multiple subplots, if the goal is to compare similar things in different subplots, in most cases it is appropriate for them all to use the same range.
 -   If there are multiple subplots, or multiple data series in the same plot, it must be made clear which is which.
 """
+
