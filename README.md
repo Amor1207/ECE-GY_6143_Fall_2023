@@ -19,7 +19,7 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ## How to Use
 
-1. Clone this repository: `git clone https://github.com/your-username/your-repo-name.git`
+1. Clone this repository: `git clone git clone https://github.com/Amor1207/ECE-GY_6143_Fall_2023.git`
 2. Navigate to the relevant week's directory to view the code and related materials.
 
 ## Dependencies
