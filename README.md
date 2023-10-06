@@ -6,18 +6,20 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ## Project Structure
 
-├── week-1-intro-to-ml       # Week 1: Introduction to Machine Learning
+├── week-1-intro-to-ml          # Week 1: Introduction to Machine Learning
 
-├── week-2-linear-regression # Week 2: Linear Regression
+├── week-2-linear-regression    # Week 2: Linear Regression
 
-├── week-3-gradient-descent  # Week 3: Gradient Descent
+├── week-3-gradient-descent     # Week 3: Gradient Descent
+
+├── week-4-Model-sel-&-regular  # Week 4: Model selection and regularization
 
 └── README.md
 
 
 ## How to Use
 
-1. Clone this repository: `git clone https://github.com/your-username/your-repo-name.git`
+1. Clone this repository: `git clone git clone https://github.com/Amor1207/ECE-GY_6143_Fall_2023.git`
 2. Navigate to the relevant week's directory to view the code and related materials.
 
 ## Dependencies
