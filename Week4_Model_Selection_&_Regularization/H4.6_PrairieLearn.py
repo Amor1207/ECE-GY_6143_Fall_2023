@@ -21,48 +21,31 @@ df['is_holiday'] = df['events'].notnull().astype('int')
 X = np.array(df[['temperature', 'precipitation', 'hour', 'is_weekend', 'is_holiday']])
 y = np.array(df['Pedestrians'])
 
-poly = PolynomialFeatures(degree=2)
-X_trans = poly.fit_transform(X)
-
-poly = PolynomialFeatures(degree=5)
-X_trans = poly.fit_transform(X)
-
-X_trans_names = poly.get_feature_names_out()
-
-X_tr, X_ts, y_tr, y_ts = train_test_split(X_trans, y, test_size = 0.3, shuffle=False)
-
-
-# use 10-fold cross validation (with `sklearn`'s `KFold`) to evaluate each `degree` from 0 to 5 (including 5)
-# in an `sklearn` `LinearRegression` model, using `r2_score` for the metric.
-# In your cross validation, you will save the validation R2 for each degree in an array called `r2_val`,
-# and save the training R2 in an array called `r2_train`.
-
-nd = 6
-nfold = 10
-
-r2_train = np.zeros((nd,nfold))
-r2_val = np.zeros((nd,nfold))
-
 kf = KFold(n_splits=nfold, shuffle=False)
 kf.get_n_splits(X_tr)
 
-# Convert data to sparse matrix
-X_tr_sparse = csr_matrix(X_tr)
-
+# Iterate through the k-folds
 for isplit, idx in enumerate(kf.split(X_tr)):
-    Itr, Its = idx
-    # Feature selection
-    selector = SelectKBest(score_func=f_regression, k=20)  # Select top 10 features
-    X_tr_selected = selector.fit_transform(X_tr[Itr], y_tr[Itr])
-    X_ts_selected = selector.transform(X_tr[Its])
+    idx_tr, idx_val = idx
 
-    for degree in range(1, nd):  # Start loop from degree=1
-        poly = PolynomialFeatures(degree=degree, interaction_only=True)  # Only interaction terms
-        X_tr_poly = poly.fit_transform(X_tr_selected)
-        X_ts_poly = poly.transform(X_ts_selected)
-        reg = LinearRegression().fit(X_tr_poly, y_tr[Itr])
-        r2_train[degree, isplit] = r2_score(y_tr[Itr], reg.predict(X_tr_poly))
-        r2_val[degree, isplit] = r2_score(y_tr[Its], reg.predict(X_ts_poly))
+    # Iterate through polynomial degrees
+    for degree in range(1, nd):
+        # Create polynomial features up to the desired degree
+        poly = PolynomialFeatures(degree=degree)
+        X_trans = poly.fit_transform(X)
+        X_tr, X_ts, y_tr, y_ts = train_test_split(X_trans, y, test_size=0.3, shuffle=False)
+        # get "transformed" training and validation data
+        x_train_dtest = X_tr[idx_tr]
+        y_train_kfold = y_tr[idx_tr]
+        x_val_dtest = X_tr[idx_val]
+        y_val_kfold = y_tr[idx_val]
+
+        # Train the model
+        reg_dtest = LinearRegression().fit(x_train_dtest, y_train_kfold)
+
+        # Compute R^2 for training and validation data
+        r2_train[degree - 1, isplit] = r2_score(y_train_kfold, reg_dtest.predict(x_train_dtest))
+        r2_val[degree - 1, isplit] = r2_score(y_val_kfold, reg_dtest.predict(x_val_dtest))
 
 # Calculate the mean r2 score for validation
 r2_mean = np.mean(r2_val, axis=1)
