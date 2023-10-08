@@ -21,32 +21,37 @@ df['is_holiday'] = df['events'].notnull().astype('int')
 X = np.array(df[['temperature', 'precipitation', 'hour', 'is_weekend', 'is_holiday']])
 y = np.array(df['Pedestrians'])
 
+poly = PolynomialFeatures(degree=5)
+X_trans = poly.fit_transform(X)
+
+X_trans.shape
+
+X_trans_names = poly.get_feature_names()
+
+X_tr, X_ts, y_tr, y_ts = train_test_split(X_trans, y, test_size = 0.3, shuffle=False)
+
+X_tr.shape
+
+nd = 6
+nfold = 10
+r2_train = np.zeros((nd, nfold))
+r2_val = np.zeros((nd, nfold))
+
 kf = KFold(n_splits=nfold, shuffle=False)
-kf.get_n_splits(X_tr)
+num_poly = [1, 6, 21, 56, 126, 252]
+for isplit, (idx_tr, idx_val) in enumerate(kf.split(X_tr)):
 
-# Iterate through the k-folds
-for isplit, idx in enumerate(kf.split(X_tr)):
-    idx_tr, idx_val = idx
-
-    # Iterate through polynomial degrees
-    for degree in range(1, nd):
-        # Create polynomial features up to the desired degree
-        poly = PolynomialFeatures(degree=degree)
-        X_trans = poly.fit_transform(X)
-        X_tr, X_ts, y_tr, y_ts = train_test_split(X_trans, y, test_size=0.3, shuffle=False)
-        # get "transformed" training and validation data
-        x_train_dtest = X_tr[idx_tr]
-        y_train_kfold = y_tr[idx_tr]
-        x_val_dtest = X_tr[idx_val]
-        y_val_kfold = y_tr[idx_val]
+    for degree in range(nd):
+        X_train_fold = X_tr[idx_tr, :num_poly[degree]]
+        X_val_fold = X_tr[idx_val, :num_poly[degree]]
 
         # Train the model
-        reg_dtest = LinearRegression().fit(x_train_dtest, y_train_kfold)
+        reg_dtest = LinearRegression().fit(X_train_fold, y_tr[idx_tr])
 
         # Compute R^2 for training and validation data
-        r2_train[degree - 1, isplit] = r2_score(y_train_kfold, reg_dtest.predict(x_train_dtest))
-        r2_val[degree - 1, isplit] = r2_score(y_val_kfold, reg_dtest.predict(x_val_dtest))
+        r2_train[degree, isplit] = r2_score(y_tr[idx_tr], reg_dtest.predict(X_train_fold))
+        r2_val[degree, isplit] = r2_score(y_tr[idx_val], reg_dtest.predict(X_val_fold))
 
 # Calculate the mean r2 score for validation
 r2_mean = np.mean(r2_val, axis=1)
-d_opt = np.argmax(r2_mean) + 1  # Adjusting for the 0-based index
+d_opt = np.argmax(r2_mean)   # Adjusting for the 0-based index
