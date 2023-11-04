@@ -14,6 +14,12 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ├── week-4-Model-sel-&-regular  # Week 4: Model selection and regularization
 
+├── week-5-Logistic-regression-for-classification  # Week 5: Logistic regression for classification
+
+├── week-6-K-nearest-neighbor  # Week 6: K nearest neighbor
+
+├── week-7-Decision-trees-&-ensembles  # Week 7: Decision trees and ensembles
+
 └── README.md
 
 
