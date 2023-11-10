@@ -20,6 +20,8 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ├── week-7-Decision-trees-&-ensembles  # Week 7: Decision trees and ensembles
 
+├── week-8-SVM  # Week 8: Support vectorclassifiers and kernels
+
 └── README.md
 
 
