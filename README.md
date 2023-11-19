@@ -22,6 +22,8 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ├── week-8-SVM  # Week 8: Support vectorclassifiers and kernels
 
+├── week-9-Neural Network  # Week 9: Neural Networks
+
 └── README.md
 
 
