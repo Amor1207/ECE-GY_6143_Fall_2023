@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-kube-service
+spec:
+  selector:
+    app: ml-kube-app
+  ports:
+  - protocol: "TCP"
+    port: 6000
+    targetPort: 5000
+    nodePort: 32000
+  type: LoadBalancer
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-kube-app
+spec:
+  selector:
+    matchLabels:
+      app: ml-kube-app
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: ml-kube-app
+    spec:
+      containers:
+      - name: ml-kube-app
+        image: node-0:5000/ml-app:0.0.1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /test
+            port: 5000
+          periodSeconds: 5
+          initialDelaySeconds: 5
+          successThreshold: 3
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "1"
+            memory: "2Gi"
