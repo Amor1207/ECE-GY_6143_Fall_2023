@@ -24,6 +24,10 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ├── week-9-Neural Network  # Week 9: Neural Networks
 
+├── week-10-DL CNN  # Week 10: Deep Learning Convolutional Neural
+
+├── week-10-DL CNN  # Week 10: Deep Learning Convolutional Neural
+
 └── README.md
 
 
