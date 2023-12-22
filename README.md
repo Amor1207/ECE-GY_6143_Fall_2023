@@ -26,7 +26,9 @@ This is an introductory course on the fundamentals of machine learning, covering
 
 ├── week-10-DL CNN  # Week 10: Deep Learning Convolutional Neural
 
-├── week-10-DL CNN  # Week 10: Deep Learning Convolutional Neural
+├── week-11-Deploying ML Systems  # Week 11: Deploying machine learning systems
+
+├── week-12-Unsupervised_learning  # Week 12: Unsupervised learning
 
 └── README.md
 
